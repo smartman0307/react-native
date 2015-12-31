@@ -13,9 +13,6 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
-    lintOptions {
-       warning 'InvalidPackage'
-    }
 }
 
 dependencies {
