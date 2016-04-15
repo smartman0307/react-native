@@ -12,6 +12,7 @@
     "android",
     "ios"
   ],
+  "nativePackage": true,
   "author": {
     "name": "Esteban Fuentealba",
     "email": "efuentealba@json.cl"
