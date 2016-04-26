@@ -1,7 +1,7 @@
 {
   "name": "react-native-share",
   "description": "Social Share, Sending Simple Data to Other Apps",
-  "version": "1.0.9",
+  "version": "1.0.4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EstebanFuentealba/react-native-share.git"
@@ -10,10 +10,8 @@
     "react-component",
     "react-native",
     "android",
-    "ios",
-    "windows"
+    "ios"
   ],
-  "nativePackage": true,
   "author": {
     "name": "Esteban Fuentealba",
     "email": "efuentealba@json.cl"
