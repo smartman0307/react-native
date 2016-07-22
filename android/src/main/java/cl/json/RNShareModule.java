@@ -1,14 +1,18 @@
 package cl.json;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.ActivityNotFoundException;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.Callback;
+
+import java.net.URI;
 
 public class RNShareModule extends ReactContextBaseJavaModule {
 
@@ -36,7 +40,15 @@ public class RNShareModule extends ReactContextBaseJavaModule {
       callback.invoke("not_available");
     }
   }
-
+  private boolean isPackageInstalled(String packagename, Context context) {
+    PackageManager pm = context.getPackageManager();
+    try {
+      pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+      return true;
+    } catch (PackageManager.NameNotFoundException e) {
+      return false;
+    }
+  }
   /**
    * Creates an {@link Intent} to be shared from a set of {@link ReadableMap} options
    * @param {@link ReadableMap} options
@@ -46,16 +58,30 @@ public class RNShareModule extends ReactContextBaseJavaModule {
     Intent intent = new Intent(android.content.Intent.ACTION_SEND);
     intent.setType("text/plain");
 
-    if (hasValidKey("share_subject", options) ) {
-      intent.putExtra(Intent.EXTRA_SUBJECT, options.getString("share_subject"));
+    if (hasValidKey("subject", options) ) {
+      intent.putExtra(Intent.EXTRA_SUBJECT, options.getString("subject"));
     }
+    //isPackageInstalled("com.whatsapp", this.reactContext);
+    if (hasValidKey("message", options) && hasValidKey("url", options)) {
+      ShareFile fileShare = new ShareFile(options.getString("url"), this.reactContext);
+      if(fileShare.isFile()) {
+        Uri uriFile = fileShare.getURI();
+        intent.setType(fileShare.getType());
+        intent.putExtra(Intent.EXTRA_STREAM, uriFile);
+        intent.putExtra(Intent.EXTRA_TEXT, options.getString("message"));
+      } else {
+        intent.putExtra(Intent.EXTRA_TEXT, options.getString("message") + " " + options.getString("url"));
+      }
+    } else if (hasValidKey("url", options)) {
+      URI uri = URI.create(options.getString("url"));
+      if(uri.getScheme().equals("data")) {
+        System.out.println("IS DATA FILE L");
+      } else {
+        intent.putExtra(Intent.EXTRA_TEXT, options.getString("url"));
+      }
 
-    if (hasValidKey("share_text", options) && hasValidKey("share_URL", options)) {
-      intent.putExtra(Intent.EXTRA_TEXT, options.getString("share_text") + " " + options.getString("share_URL"));
-    } else if (hasValidKey("share_URL", options)) {
-      intent.putExtra(Intent.EXTRA_TEXT, options.getString("share_URL"));
-    } else if (hasValidKey("share_text", options) ) {
-      intent.putExtra(Intent.EXTRA_TEXT, options.getString("share_text"));
+    } else if (hasValidKey("message", options) ) {
+      intent.putExtra(Intent.EXTRA_TEXT, options.getString("message"));
     }
     return intent;
   }
