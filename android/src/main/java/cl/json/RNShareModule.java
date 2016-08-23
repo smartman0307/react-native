@@ -46,8 +46,7 @@ public class RNShareModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void open(ReadableMap options, @Nullable Callback failureCallback, @Nullable Callback successCallback) {
         try{
-            GenericShare share = new GenericShare(this.reactContext);
-            share.open(options);
+            this.sharesExtra.get("generic").open(options);
             successCallback.invoke("OK");
         }catch(ActivityNotFoundException ex) {
             System.out.println("ERROR");
