@@ -33,26 +33,35 @@ public abstract class ShareIntent {
         }
 
         if (ShareIntent.hasValidKey("message", options) && ShareIntent.hasValidKey("url", options)) {
-            ShareFile fileShare = new ShareFile(options.getString("url"), this.reactContext);
+            ShareFile fileShare = getFileShare(options);
             if(fileShare.isFile()) {
                 Uri uriFile = fileShare.getURI();
                 this.getIntent().setType(fileShare.getType());
                 this.getIntent().putExtra(Intent.EXTRA_STREAM, uriFile);
                 this.getIntent().putExtra(Intent.EXTRA_TEXT, options.getString("message"));
+                this.getIntent().addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
                 this.getIntent().putExtra(Intent.EXTRA_TEXT, options.getString("message") + " " + options.getString("url"));
             }
         } else if (ShareIntent.hasValidKey("url", options)) {
-            ShareFile fileShare = new ShareFile(options.getString("url"), this.reactContext);
+            ShareFile fileShare = getFileShare(options);
             if(fileShare.isFile()) {
                 Uri uriFile = fileShare.getURI();
                 this.getIntent().setType(fileShare.getType());
                 this.getIntent().putExtra(Intent.EXTRA_STREAM, uriFile);
+                this.getIntent().addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
                 this.getIntent().putExtra(Intent.EXTRA_TEXT, options.getString("url"));
             }
         } else if (ShareIntent.hasValidKey("message", options) ) {
             this.getIntent().putExtra(Intent.EXTRA_TEXT, options.getString("message"));
+        }
+    }
+    protected ShareFile getFileShare(ReadableMap options) {
+        if (ShareIntent.hasValidKey("type", options)) {
+            return new ShareFile(options.getString("url"), options.getString("type"), this.reactContext);
+        } else {
+            return new ShareFile(options.getString("url"), this.reactContext);
         }
     }
     protected static String urlEncode(String param) {
