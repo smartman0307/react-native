@@ -61,7 +61,6 @@ Supported options:
 | Name  | Type     | Description |
 | :---- | :------: | :--- |
 | url | string   | URL you want to share (you can share a base64 file url only in iOS & Android ) |
-| type | string   | File mime type (optional) |
 | message | string   |  |
 | title | string   |  (optional) |
 | subject | string   | (optional) |
@@ -76,11 +75,10 @@ Supported options:
 | Name  | Type     | Description |
 | :---- | :------: | :--- |
 | url | string   | URL you want to share |
-| type | string   | File mime type (optional) |
 | message | string   |  |
 | title | string   |  (optional) |
 | subject | string   | (optional) |
-| social | string   | supported social apps: twitter, facebook, whatsapp, gplus, email |
+| social | string   | supported social apps: twitter, facebook, whatsapp, googleplus, email |
 
 ***NOTE: If both `message` and `url` are provided `url` will be concatenated to the end of `message` to form the body of the message. If only one is provided it will be used***
 
@@ -198,7 +196,7 @@ class TestShare extends Component {
               this.onCancel();
               setTimeout(() => {
                 Share.shareSingle(Object.assign(shareOptions, {
-                  "social": "gplus"
+                  "social": "googleplus"
                 }));
               },300);
             }}>Google +</Button>

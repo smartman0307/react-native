@@ -26,13 +26,8 @@ public class ShareFile {
     private final ReactApplicationContext reactContext;
     private String url;
     private Uri uri;
-    private String type;
+    private String type = "*/*";
     private String extension = "";
-
-    public ShareFile(String url, String type, ReactApplicationContext reactContext){
-        this(url, reactContext);
-        this.type = type;
-    }
 
     public ShareFile(String url, ReactApplicationContext reactContext){
         this.url = url;
@@ -68,10 +63,6 @@ public class ShareFile {
     }
     public boolean isLocalFile() {
         if(uri.getScheme().equals("content") || uri.getScheme().equals("file")) {
-            // type is already set
-            if (this.type != null) {
-                return true;
-            }
             // try to get mimetype from uri
             this.type = this.getMimeType(uri.toString());
 
@@ -90,9 +81,6 @@ public class ShareFile {
         return false;
     }
     public String getType() {
-        if (this.type == null) {
-           return "*/*";
-        }
         return this.type;
     }
     private String getRealPathFromURI(Uri contentUri) {
@@ -108,7 +96,7 @@ public class ShareFile {
     public Uri getURI() {
 
         final MimeTypeMap mime = MimeTypeMap.getSingleton();
-        this.extension = mime.getExtensionFromMimeType(getType());
+        this.extension = mime.getExtensionFromMimeType(this.type);
         if(this.isBase64File()) {
             String encodedImg = this.uri.getSchemeSpecificPart().substring(this.uri.getSchemeSpecificPart().indexOf(";base64,") + 8);
             try {
