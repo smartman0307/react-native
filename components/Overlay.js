@@ -18,8 +18,6 @@ const styles = StyleSheet.create({
         position: 'absolute'
     },
     emptyOverlay: {
-        width: 0,
-        height: 0,
         backgroundColor: 'transparent',
         position: 'absolute'
     }
