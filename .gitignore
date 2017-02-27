@@ -22,9 +22,6 @@ DerivedData
 *.xcuserstate
 project.xcworkspace
 
-# Visual Studio
-*.VC.db
-
 # node.js
 #
 node_modules/
