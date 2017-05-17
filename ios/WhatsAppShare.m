@@ -9,8 +9,6 @@
 #import "WhatsAppShare.h"
 
 @implementation WhatsAppShare
-static UIDocumentInteractionController *documentInteractionController;
-
 - (void)shareSingle:(NSDictionary *)options
     failureCallback:(RCTResponseErrorBlock)failureCallback
     successCallback:(RCTResponseSenderBlock)successCallback {
@@ -20,44 +18,30 @@ static UIDocumentInteractionController *documentInteractionController;
     if ([options objectForKey:@"message"] && [options objectForKey:@"message"] != [NSNull null]) {
         NSString *text = [RCTConvert NSString:options[@"message"]];
         text = [text stringByAppendingString: [@" " stringByAppendingString: options[@"url"]] ];
+        text = (NSString*)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef) text, NULL,CFSTR("!*'();:@&=+$,/?%#[]"),kCFStringEncodingUTF8));
+        
+        NSString * urlWhats = [NSString stringWithFormat:@"whatsapp://send?text=%@", text];
+        NSURL * whatsappURL = [NSURL URLWithString:urlWhats];
 
-        if ([[UIApplication sharedApplication] canOpenURL: [NSURL URLWithString:@"whatsapp://app"]]) {
-            NSLog(@"WhatsApp installed");
-        } else {
-            // Cannot open whatsapp
-            NSString *stringURL = @"http://itunes.apple.com/app/whatsapp-messenger/id310633997";
-            NSURL *url = [NSURL URLWithString:stringURL];
-            [[UIApplication sharedApplication] openURL:url];
-
-            NSString *errorMessage = @"Not installed";
-            NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedString(errorMessage, nil)};
-            NSError *error = [NSError errorWithDomain:@"com.rnshare" code:1 userInfo:userInfo];
-
-            NSLog(errorMessage);
-            return failureCallback(error);
-        }
-
-        if ([options[@"url"] rangeOfString:@"wam"].location != NSNotFound) {
-            NSLog(@"Sending whatsapp movie");
-            documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:options[@"url"]]];
-            documentInteractionController.UTI = @"net.whatsapp.movie";
-            documentInteractionController.delegate = self;
-
-            [documentInteractionController presentOpenInMenuFromRect:CGRectMake(0, 0, 0, 0) inView:[[[[[UIApplication sharedApplication] delegate] window] rootViewController] view] animated:YES];
-            NSLog(@"Done whatsapp movie");
+        if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
+            [[UIApplication sharedApplication] openURL: whatsappURL];
             successCallback(@[]);
         } else {
-            text = (NSString*)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef) text, NULL,CFSTR("!*'();:@&=+$,/?%#[]"),kCFStringEncodingUTF8));
-            
-            NSString * urlWhats = [NSString stringWithFormat:@"whatsapp://send?text=%@", text];
-            NSURL * whatsappURL = [NSURL URLWithString:urlWhats];
-    
-            if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
-                [[UIApplication sharedApplication] openURL: whatsappURL];
-                successCallback(@[]);
-            }
+          // Cannot open whatsapp
+          NSString *stringURL = @"http://itunes.apple.com/en/app/whatsapp-messenger/id310633997";
+          NSURL *url = [NSURL URLWithString:stringURL];
+          [[UIApplication sharedApplication] openURL:url];
+
+          NSString *errorMessage = @"Not installed";
+          NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedString(errorMessage, nil)};
+          NSError *error = [NSError errorWithDomain:@"com.rnshare" code:1 userInfo:userInfo];
+
+          NSLog(errorMessage);
+          failureCallback(error);
         }
     }
+
 }
+
 
 @end
