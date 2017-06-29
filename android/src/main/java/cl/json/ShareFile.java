@@ -78,11 +78,7 @@ public class ShareFile {
             // try resolving the file and get the mimetype
             if(this.type == null) {
               String realPath = this.getRealPathFromURI(uri);
-              if (realPath != null) {
-                  this.type = this.getMimeType(realPath);
-              } else {
-                  return false;
-              }
+              this.type = this.getMimeType(realPath);
             }
 
             if(this.type == null) {
@@ -103,12 +99,10 @@ public class ShareFile {
         String[] proj = { MediaStore.Images.Media.DATA };
         CursorLoader loader = new CursorLoader(this.reactContext, contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
-        String result = null;
-        if (cursor != null && cursor.moveToFirst()) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            result = cursor.getString(column_index);
-            cursor.close();
-        }
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
         return result;
     }
     public Uri getURI() {
