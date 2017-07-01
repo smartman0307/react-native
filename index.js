@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  BackHandler,
+  BackAndroid,
   NativeModules,
   Platform,
   ActionSheetIOS,
@@ -74,7 +74,7 @@ class RNShare {
 }
 class ShareSheet extends React.Component {
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress',() => {
+    BackAndroid.addEventListener('hardwareBackPress',() => {
       if (this.props.visible) {
         this.props.onCancel();
         return true;
