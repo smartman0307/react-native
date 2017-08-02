@@ -31,10 +31,6 @@ public abstract class ShareIntent {
         if (ShareIntent.hasValidKey("subject", options) ) {
             this.getIntent().putExtra(Intent.EXTRA_SUBJECT, options.getString("subject"));
         }
-        
-        if (ShareIntent.hasValidKey("title", options) ) {
-            this.chooserTitle = options.getString("title");
-        }
 
         if (ShareIntent.hasValidKey("message", options) && ShareIntent.hasValidKey("url", options)) {
             ShareFile fileShare = getFileShare(options);
