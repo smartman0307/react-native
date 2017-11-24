@@ -1,4 +1,4 @@
-﻿# react-native-share [![npm version](https://badge.fury.io/js/react-native-share.svg)](http://badge.fury.io/js/react-native-share)
+# react-native-share [![npm version](https://badge.fury.io/js/react-native-share.svg)](http://badge.fury.io/js/react-native-share)
 Share Social , Sending Simple Data to Other Apps
 
 ***NOTE: React Native now implements share functionality [Read more](https://facebook.github.io/react-native/docs/share.html)***
@@ -15,18 +15,14 @@ Share Social , Sending Simple Data to Other Apps
 
 1. `npm install react-native-share --save`
 2. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-3. Go to `node_modules` ➜ `react-native-share` ➜ `ios` and add `RNShare.xcodeproj`
+3. Go to `node_modules` ➜ `react-native-share` and add `RNShare.xcodeproj`
 4. In XCode, in the project navigator, select your project. Add `libRNShare.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 5. In XCode, in the project navigator, select your project. Add `Social.framework` and `MessageUI.framework` to your project's `General` ➜ `Linked Frameworks and Libraries`
-6. In file Info.plist, add
-    ```xml
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>whatsapp</string>
-      <string>mailto</string>
-    </array>
-    ```
-
+6. In file Info.plist, add `<key>LSApplicationQueriesSchemes</key>
+<array>
+  <string>whatsapp</string>
+  <string>mailto</string>
+</array>`
 6. Run your project (`Cmd+R`)
 
 #### Android
@@ -45,38 +41,6 @@ Share Social , Sending Simple Data to Other Apps
     ```
       compile project(':react-native-share')
     ```
-5. Follow this [guide](https://developer.android.com/training/secure-file-sharing/setup-sharing.html)
-Example:
-Put this in `AndroidManifest.xml` where `applicationId` is something that you have defined in `android/app/build.gradle`.
-    ```xml
-      <application>
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:grantUriPermissions="true"
-            android:exported="false">
-        </provider>
-      </application>
-    ```
-6. Make your `Application` class implements `ShareApplication`
-  - Make `getFileProviderAuthority` function return the `android:authorities` that was added on AndroidManifest file
-  - Example: `applicationId` is defined in `android/app/build.gradle`.
-
-    ```
-    import cl.json.ShareApplication
-
-    class MyApplication extends Application implements ShareApplication, ReactApplication {
-
-    {
-
-         @Override
-         public String getFileProviderAuthority() {
-                return "${applicationId}.provider";
-         }
-
-    }
-    ```
-
 
 #### Windows
 [Read it! :D](https://github.com/ReactWindows/react-native)
