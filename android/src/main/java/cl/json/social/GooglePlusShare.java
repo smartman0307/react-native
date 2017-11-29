@@ -29,7 +29,7 @@ public class GooglePlusShare extends SingleShareIntent {
 
     @Override
     protected String getDefaultWebLink() {
-        return PLAY_STORE_LINK;
+        return null;
     }
 
     @Override
