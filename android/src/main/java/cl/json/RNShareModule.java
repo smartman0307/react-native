@@ -16,7 +16,6 @@ import java.util.HashMap;
 
 import cl.json.social.EmailShare;
 import cl.json.social.FacebookShare;
-import cl.json.social.FacebookPagesManagerShare;
 import cl.json.social.GenericShare;
 import cl.json.social.GooglePlusShare;
 import cl.json.social.ShareIntent;
@@ -32,7 +31,6 @@ public class RNShareModule extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
         sharesExtra.put("generic", new GenericShare(this.reactContext));
         sharesExtra.put("facebook", new FacebookShare(this.reactContext));
-        sharesExtra.put("pagesmanager", new FacebookPagesManagerShare(this.reactContext));
         sharesExtra.put("twitter", new TwitterShare(this.reactContext));
         sharesExtra.put("whatsapp",new WhatsAppShare(this.reactContext));
         sharesExtra.put("googleplus",new GooglePlusShare(this.reactContext));
