@@ -34,25 +34,20 @@ Share Social , Sending Simple Data to Other Apps
 1. `npm install react-native-share --save`
 2. Open up `android/app/src/main/java/[...]/MainApplication.java`
   - Add `import cl.json.RNSharePackage;` to the imports at the top of the file
-  - Add `new RNSharePackage()` to the list returned by the `getPackages()`
-    method
+  - Add `new RNSharePackage()` to the list returned by the `getPackages()` method
 3. Append the following lines to `android/settings.gradle`:
   	```
   	include ':react-native-share'
   	project(':react-native-share').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-share/android')
   	```
-4. Insert the following lines inside the dependencies block in
-   `android/app/build.gradle`:
+4. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
 
     ```
       compile project(':react-native-share')
     ```
-5. Follow this
-   [guide](https://developer.android.com/training/secure-file-sharing/setup-sharing.html).
-   For example:
-  - Put this in `AndroidManifest.xml` where `applicationId` is something that
-    you have defined in `android/app/build.gradle`:
-
+5. Follow this [guide](https://developer.android.com/training/secure-file-sharing/setup-sharing.html)
+Example:
+Put this in `AndroidManifest.xml` where `applicationId` is something that you have defined in `android/app/build.gradle`.
     ```xml
       <application>
         <provider
@@ -60,31 +55,12 @@ Share Social , Sending Simple Data to Other Apps
             android:authorities="${applicationId}.provider"
             android:grantUriPermissions="true"
             android:exported="false">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" />
         </provider>
       </application>
     ```
-
-  - Create a `filepaths.xml` under this directory:
-    `android/app/src/main/res/xml`. In this file, add the following contents:
-
-    ```xml
-      <?xml version="1.0" encoding="utf-8"?>
-      <paths xmlns:android="http://schemas.android.com/apk/res/android">
-          <external-path name="myexternalimages" path="Download/" />
-      </paths>
-    ```
-
-6. Edit your `MainApplication` class to implement `ShareApplication`
-  - Also add the `getFileProviderAuthority` method to your MainApplication class,
-    and have it return the `android:authorities` that was added in
-    AndroidManifest file.
-  - For example: Replace the `com.example.yourappidhere` below with the
-    `applicationId` that is defined in your `android/app/build.gradle`. It must
-    be [hard-coded here to work
-    properly](https://github.com/EstebanFuentealba/react-native-share/issues/200#issuecomment-361938532).
+6. Make your `Application` class implements `ShareApplication`
+  - Make `getFileProviderAuthority` function return the `android:authorities` that was added on AndroidManifest file
+  - Example: `applicationId` is defined in `android/app/build.gradle`.
 
     ```
     import cl.json.ShareApplication
@@ -93,11 +69,9 @@ Share Social , Sending Simple Data to Other Apps
 
     {
 
-         //...
-
          @Override
          public String getFileProviderAuthority() {
-                return "com.example.yourappidhere.provider";
+                return "${applicationId}.provider";
          }
 
     }
