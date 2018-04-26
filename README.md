@@ -102,12 +102,6 @@ Share Social , Sending Simple Data to Other Apps
 
     }
     ```
-7. When using targetSdkVersion 23 or greater, you might need to explicitly ask for permission otherwise sharing a base64 image will fail : 
-  ```
-  const allowedStorage = await PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-  );
-  ```
 
 
 #### Windows
@@ -142,6 +136,7 @@ Supported options:
 | title | string   |  (optional) |
 | subject | string   | (optional) |
 | excludedActivityTypes | string   | (optional) |
+| failOnCancel | boolean | (defaults to true) on iOS, specifies whether promise should reject if user cancels share dialog (optional) |
 
 #### shareSingle(options) (in iOS & Android)
 
