@@ -10,8 +10,8 @@ Share Social , Sending Simple Data to Other Apps
 2. `react-native link`
 
 ### Manual install
-
-#### iOS
+<details>
+<summary> iOS</summary>
 
 1. `npm install react-native-share --save`
 2. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
@@ -29,7 +29,10 @@ Share Social , Sending Simple Data to Other Apps
 
 6. Run your project (`Cmd+R`)
 
-#### Android
+</details>
+
+<details>
+<summary> Android</summary>
 
 1. `npm install react-native-share --save`
 2. Open up `android/app/src/main/java/[...]/MainApplication.java`
@@ -102,15 +105,18 @@ Share Social , Sending Simple Data to Other Apps
 
     }
     ```
-7. When using targetSdkVersion 23 or greater, you might need to explicitly ask for permission otherwise sharing a base64 image will fail :
+7. When using targetSdkVersion 23 or greater, you might need to explicitly ask for permission otherwise sharing a base64 image will fail : 
   ```
   const allowedStorage = await PermissionsAndroid.request(
     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
   );
   ```
 
+</details>
 
-#### Windows
+<details>
+<summary> Windows</summary>
+    
 [Read it! :D](https://github.com/ReactWindows/react-native)
 
 1. `npm install react-native-share --save`
@@ -119,6 +125,8 @@ Share Social , Sending Simple Data to Other Apps
   - Add `using Cl.Json.RNShare;` to the usings at the top of the file
   - Add `new RNSharePackage()` to the `List<IReactPackage>` returned by the `Packages` method
 
+
+</details>
 
 ### Methods
 
@@ -142,8 +150,7 @@ Supported options:
 | title | string   |  (optional) |
 | subject | string   | (optional) |
 | excludedActivityTypes | string   | (optional) |
-| failOnCancel | boolean | (defaults to true) On iOS, specifies whether promise should reject if user cancels share dialog (optional) |
-| showAppsToView | boolean | (optional) only android|
+| showAppsToView | boolean | (optional) only android| 
 
 #### shareSingle(options) (in iOS & Android)
 
