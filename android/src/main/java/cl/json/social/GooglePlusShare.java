@@ -11,20 +11,17 @@ import com.facebook.react.bridge.ReadableMap;
 public class GooglePlusShare extends SingleShareIntent {
 
     private static final String PACKAGE = "com.google.android.apps.plus";
-    private static final String DEFAULT_WEB_LINK = "https://plus.google.com/share?url={url}";
-    private static final String PLAY_STORE_LINK = "market://details?id=com.google.android.apps.plus";
+    private static final String PLAY_STORE_LINK = "https://plus.google.com/share?url={url}";
 
     public GooglePlusShare(ReactApplicationContext reactContext) {
         super(reactContext);
     }
-
     @Override
     public void open(ReadableMap options) throws ActivityNotFoundException {
         super.open(options);
         //  extra params here
         this.openIntentChooser();
     }
-
     @Override
     protected String getPackage() {
         return PACKAGE;
@@ -32,7 +29,7 @@ public class GooglePlusShare extends SingleShareIntent {
 
     @Override
     protected String getDefaultWebLink() {
-        return DEFAULT_WEB_LINK;
+        return null;
     }
 
     @Override
@@ -40,3 +37,4 @@ public class GooglePlusShare extends SingleShareIntent {
         return PLAY_STORE_LINK;
     }
 }
+
