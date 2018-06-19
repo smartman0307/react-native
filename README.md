@@ -10,17 +10,8 @@ Share Social , Sending Simple Data to Other Apps
 2. `react-native link`
 
 ### Manual install
-
-`npm install react-native-share --save`
-
-- [iOS](https://github.com/react-native-community/react-native-share#iOS-Install)
-
-- [Android](https://github.com/react-native-community/react-native-share#Android-Install)
-
-- [Windows](https://github.com/react-native-community/react-native-share#Windows-Install)
-
-
-#### iOS Install
+<details>
+<summary> iOS</summary>
 
 1. `npm install react-native-share --save`
 2. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
@@ -38,7 +29,10 @@ Share Social , Sending Simple Data to Other Apps
 
 6. Run your project (`Cmd+R`)
 
-#### Android Install
+</details>
+
+<details>
+<summary> Android</summary>
 
 1. `npm install react-native-share --save`
 2. Open up `android/app/src/main/java/[...]/MainApplication.java`
@@ -117,8 +111,11 @@ Share Social , Sending Simple Data to Other Apps
     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
   );
   ```
-  
-#### Windows Install
+
+</details>
+
+<details>
+<summary> Windows</summary>
     
 [Read it! :D](https://github.com/ReactWindows/react-native)
 
@@ -129,6 +126,8 @@ Share Social , Sending Simple Data to Other Apps
   - Add `new RNSharePackage()` to the `List<IReactPackage>` returned by the `Packages` method
 
 
+</details>
+
 ### Methods
 
 #### open(options)
@@ -138,7 +137,9 @@ Open Simple share dialog
 Returns a promise that fulfills or rejects as soon as user successfully open the share action sheet or cancelled/failed to do so. As a result you might need to further handle the rejection while necessary. e.g.
 
 ```javascript
-Share.open(options).catch((err) => { err && console.log(err); })
+  Share.open(options)
+    .then((res) => { console.log(res))
+    .catch((err) => { err && console.log(err); });
 ```
 
 Supported options:
