@@ -34,37 +34,25 @@ class RNShare {
   static open(options) {
     return new Promise((resolve, reject) => {
       if (Platform.OS === "ios") {
-        if (options.urls) {
-          // Handle for multiple file share
-          NativeModules.RNShare.open(options, (error) => {
-            return reject({error: error});
-          }, (success, activityType) => {
-            if (success) {
-              return resolve({
-                app: activityType
-              });
-            } else {
-              reject({error: "User did not share"});
-            }
-          });
-        } else {
-          // Handle for single file share
-          ActionSheetIOS.showShareActionSheetWithOptions(options, (error) => {
-            return reject({error: error});
-          }, (success, activityType) => {
-            if (success) {
-              return resolve({
-                app: activityType
-              });
-            } else {
-              reject({error: "User did not share"});
-            }
-          });
-        }
+        ActionSheetIOS.showShareActionSheetWithOptions(options, (error) => {
+          return reject({ error: error });
+        }, (success, activityType) => {
+          if (success) {
+            return resolve({
+              app: activityType
+            });
+          } else if (options.failOnCancel === false) {
+            return resolve({
+              dismissedAction: true,
+            });
+          } else {
+            reject({ error: "User did not share" });
+          }
+        });
       } else {
-        NativeModules.RNShare.open(options, (e) => {
-          return reject({error: e});
-        }, (e) => {
+        NativeModules.RNShare.open(options,(e) => {
+          return reject({ error: e });
+        },(e) => {
           resolve({
             message: e
           });
@@ -72,13 +60,12 @@ class RNShare {
       }
     });
   }
-
-  static shareSingle(options) {
+  static shareSingle(options){
     if (Platform.OS === "ios" || Platform.OS === "android") {
       return new Promise((resolve, reject) => {
-        NativeModules.RNShare.shareSingle(options, (e) => {
-          return reject({error: e});
-        }, (e) => {
+        NativeModules.RNShare.shareSingle(options,(e) => {
+          return reject({ error: e });
+        },(e) => {
           return resolve({
             message: e
           });
@@ -89,32 +76,23 @@ class RNShare {
     }
   }
 }
-
 class ShareSheet extends React.Component {
   componentDidMount() {
-    this.backButtonHandler = this.backButtonHandler.bind(this);
-    BackHandler.addEventListener('backPress', this.backButtonHandler);
+    BackHandler.addEventListener('hardwareBackPress',() => {
+      if (this.props.visible) {
+        this.props.onCancel();
+        return true;
+      }
+      return false;
+    });
   }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener('backPress', this.backButtonHandler);
-  }
-
-  backButtonHandler() {
-    if (this.props.visible) {
-      this.props.onCancel();
-      return true;
-    }
-    return false;
-  }
-
-  render() {
+  render(){
     return (
       <Overlay visible={this.props.visible} {...this.props}>
         <View style={styles.actionSheetContainer}>
           <TouchableOpacity
-            style={{flex: 1}}
-            onPress={this.props.onCancel}>
+              style={{flex:1}}
+              onPress={this.props.onCancel}>
           </TouchableOpacity>
           <Sheet visible={this.props.visible}>
             <View style={styles.buttonContainer}>
