@@ -13,7 +13,6 @@ import com.facebook.react.bridge.Callback;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import cl.json.social.EmailShare;
 import cl.json.social.FacebookShare;
@@ -28,59 +27,24 @@ import cl.json.social.InstagramShare;
 public class RNShareModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
-    private enum SHARES {
-        facebook,
-        generic,
-        pagesmanager,
-        twitter,
-        whatsapp,
-        instagram,
-        googleplus,
-        email;
-
-        public static ShareIntent getShareClass(String social, ReactApplicationContext reactContext) {
-            SHARES share = valueOf(social);
-            switch (share) {
-                case generic:
-                    return new GenericShare(reactContext);
-                case facebook:
-                    return new FacebookShare(reactContext);
-                case pagesmanager:
-                    return new FacebookPagesManagerShare(reactContext);
-                case twitter:
-                    return new TwitterShare(reactContext);
-                case whatsapp:
-                    return new WhatsAppShare(reactContext);
-                case instagram:
-                    return new InstagramShare(reactContext);
-                case googleplus:
-                    return new GooglePlusShare(reactContext);
-                case email:
-                    return new EmailShare(reactContext);
-                default:
-                    return null;
-            }
-        }
-    };
-
+    private HashMap<String, ShareIntent> sharesExtra = new HashMap<String, ShareIntent>();
     public RNShareModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        sharesExtra.put("generic", new GenericShare(this.reactContext));
+        sharesExtra.put("facebook", new FacebookShare(this.reactContext));
+        sharesExtra.put("pagesmanager", new FacebookPagesManagerShare(this.reactContext));
+        sharesExtra.put("twitter", new TwitterShare(this.reactContext));
+        sharesExtra.put("whatsapp",new WhatsAppShare(this.reactContext));
+        sharesExtra.put("instagram",new InstagramShare(this.reactContext));
+        sharesExtra.put("googleplus",new GooglePlusShare(this.reactContext));
+        sharesExtra.put("email",new EmailShare(this.reactContext));
+        //  add more customs single intent shares here
     }
 
     @Override
     public String getName() {
     return "RNShare";
-    }
-
-    @javax.annotation.Nullable
-    @Override
-    public Map<String, Object> getConstants() {
-        Map<String, Object> constants = new HashMap<>();
-        for (SHARES val: SHARES.values()) {
-            constants.put(val.toString().toUpperCase(), val.toString());
-        }
-        return constants;
     }
 
     @ReactMethod
@@ -99,19 +63,13 @@ public class RNShareModule extends ReactContextBaseJavaModule {
             failureCallback.invoke(e.getMessage());
         }
     }
-
     @ReactMethod
     public void shareSingle(ReadableMap options, @Nullable Callback failureCallback, @Nullable Callback successCallback) {
         System.out.println("SHARE SINGLE METHOD");
         if (ShareIntent.hasValidKey("social", options) ) {
             try{
-                ShareIntent shareClass = SHARES.getShareClass(options.getString("social"), this.reactContext);
-                if (shareClass != null && shareClass instanceof ShareIntent) {
-                    shareClass.open(options);
-                    successCallback.invoke("OK");
-                } else {
-                    throw new ActivityNotFoundException("Invalid share activity");
-                }
+                this.sharesExtra.get(options.getString("social")).open(options);
+                successCallback.invoke("OK");
             }catch(ActivityNotFoundException ex) {
                 System.out.println("ERROR");
                 System.out.println(ex.getMessage());
