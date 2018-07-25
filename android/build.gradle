@@ -8,24 +8,25 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'com.android.tools.build:gradle:+'
     }
 }
 
 apply plugin: 'com.android.library'
 
-def safeExtGet(prop, fallback) {
-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
-}
+def DEFAULT_COMPILE_SDK_VERSION = 26
+def DEFAULT_BUILD_TOOLS_VERSION = "26.0.2"
+def DEFAULT_TARGET_SDK_VERSION = 26
+def DEFAULT_GOOGLE_PLAY_SERVICES_VERSION = "12.0.1"
+def DEFAULT_SUPPORT_LIBRARY_VERSION = "27.1.0"
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 27)
-    buildToolsVersion safeExtGet('buildToolsVersion', '27.0.3')
-
+    compileSdkVersion rootProject.hasProperty('compileSdkVersion') ? rootProject.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
+    buildToolsVersion rootProject.hasProperty('buildToolsVersion') ? rootProject.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 16)
-        targetSdkVersion safeExtGet('targetSdkVersion', 27)
+        minSdkVersion 16
+        targetSdkVersion rootProject.hasProperty('targetSdkVersion') ? rootProject.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
 
         versionCode 1
         versionName "1.0.0"
@@ -50,6 +51,8 @@ repositories {
 }
 
 dependencies {
-    compile "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
-    compile "com.android.support:appcompat-v7:${safeExtGet('supportLibVersion', '27.1.0')}"
+    def supportLibVersion = rootProject.hasProperty('supportLibVersion') ? rootProject.supportLibVersion : DEFAULT_SUPPORT_LIBRARY_VERSION
+
+    compile 'com.facebook.react:react-native:+'
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
 }
