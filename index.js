@@ -36,8 +36,6 @@ type Props = {
   visible: boolean,
   onCancel: () => void,
   children: React.Node,
-  style?: {},
-  overlayStyle?: {},
 };
 
 const shareSheetStyle = { flex: 1 };
@@ -62,13 +60,12 @@ class ShareSheet extends React.Component<Props> {
     return false;
   }
   render() {
-    const { style = {}, overlayStyle = {}, ...props } = this.props;
     return (
-      <Overlay visible={this.props.visible} {...props}>
-        <View style={[styles.actionSheetContainer, overlayStyle]}>
+      <Overlay visible={this.props.visible} {...this.props}>
+        <View style={styles.actionSheetContainer}>
           <TouchableOpacity style={shareSheetStyle} onPress={this.props.onCancel} />
           <Sheet visible={this.props.visible}>
-            <View style={[styles.buttonContainer, style]}>{this.props.children}</View>
+            <View style={styles.buttonContainer}>{this.props.children}</View>
           </Sheet>
         </View>
       </Overlay>
@@ -175,46 +172,60 @@ class RNShare {
     return new Promise((resolve, reject) => {
       requireAndAskPermissions(options)
         .then(() => {
-          if (Platform.OS === 'ios' && !options.urls) {
-            // Handle for single file share
-            ActionSheetIOS.showShareActionSheetWithOptions(
-              options,
-              error => {
-                return reject({ error: error });
-              },
-              (success, activityType) => {
-                if (success) {
-                  return resolve({
-                    app: activityType,
-                  });
-                } else if (options.failOnCancel === false) {
-                  return resolve({
-                    dismissedAction: true,
-                  });
-                } else {
-                  reject(new Error('User did not share'));
-                }
-              },
-            );
+          if (Platform.OS === 'ios') {
+            if (options.urls) {
+              // Handle for multiple file share
+              NativeModules.RNShare.open(
+                options,
+                error => {
+                  return reject({ error: error });
+                },
+                (success, activityType) => {
+                  if (success) {
+                    return resolve({
+                      app: activityType,
+                    });
+                  } else if (options.failOnCancel === false) {
+                    return resolve({
+                      dismissedAction: true,
+                    });
+                  } else {
+                    reject({ error: 'User did not share' });
+                  }
+                },
+              );
+            } else {
+              // Handle for single file share
+              ActionSheetIOS.showShareActionSheetWithOptions(
+                options,
+                error => {
+                  return reject({ error: error });
+                },
+                (success, activityType) => {
+                  if (success) {
+                    return resolve({
+                      app: activityType,
+                    });
+                  } else if (options.failOnCancel === false) {
+                    return resolve({
+                      dismissedAction: true,
+                    });
+                  } else {
+                    reject({ error: 'User did not share' });
+                  }
+                },
+              );
+            }
           } else {
             NativeModules.RNShare.open(
               options,
               e => {
                 return reject({ error: e });
               },
-              (success, activityType) => {
-                if (success) {
-                  return resolve({
-                    app: activityType,
-                    message: activityType,
-                  });
-                } else if (options.failOnCancel === false) {
-                  return resolve({
-                    dismissedAction: true,
-                  });
-                } else {
-                  reject(new Error('User did not share'));
-                }
+              e => {
+                resolve({
+                  message: e,
+                });
               },
             );
           }
@@ -233,10 +244,9 @@ class RNShare {
               e => {
                 return reject({ error: e });
               },
-              (e, activityType) => {
+              e => {
                 return resolve({
                   message: e,
-                  app: activityType,
                 });
               },
             );
