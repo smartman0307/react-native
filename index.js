@@ -16,7 +16,6 @@ import {
   ActionSheetIOS,
   PermissionsAndroid,
 } from 'react-native';
-import type { ViewStyleProp } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 import Overlay from './components/Overlay';
 import Sheet from './components/Sheet';
@@ -42,8 +41,8 @@ type Props = {
   visible: boolean,
   onCancel: () => void,
   children: React.Node,
-  style?: $ReadOnlyArray<ViewStyleProp>,
-  overlayStyle?: $ReadOnlyArray<ViewStyleProp>,
+  style?: {},
+  overlayStyle?: {},
 };
 
 const shareSheetStyle = { flex: 1 };
