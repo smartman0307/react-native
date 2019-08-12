@@ -55,18 +55,6 @@ public abstract class ShareIntent {
         if (ShareIntent.hasValidKey("message", options)) {
             message = options.getString("message");
         }
-
-        String socialType = options.getString("social");
-
-        if (socialType.equals("whatsapp")) {
-            String whatsAppNumber = options.getString("whatsAppNumber");
-            if (!whatsAppNumber.isEmpty()) {
-                String chatAddress = whatsAppNumber + "@s.whatsapp.net";
-                this.getIntent().putExtra("jid", chatAddress);
-            }
-        }
-
-
         if (ShareIntent.hasValidKey("urls", options)) {
 
             ShareFiles fileShare = getFileShares(options);
@@ -109,10 +97,14 @@ public abstract class ShareIntent {
     }
 
     protected ShareFile getFileShare(ReadableMap options) {
+         String filename = null;
+        if (ShareIntent.hasValidKey("filename", options)) {
+            filename = options.getString("filename");
+        }
         if (ShareIntent.hasValidKey("type", options)) {
-            return new ShareFile(options.getString("url"), options.getString("type"), this.reactContext);
+            return new ShareFile(options.getString("url"), options.getString("type"), filename, this.reactContext);
         } else {
-            return new ShareFile(options.getString("url"), this.reactContext);
+            return new ShareFile(options.getString("url"), filename, this.reactContext);
         }
     }
 
