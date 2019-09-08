@@ -17,16 +17,12 @@
     NSLog(@"Try open view");
 
     if ([options objectForKey:@"message"] && [options objectForKey:@"message"] != [NSNull null]) {
+        NSString *text = [RCTConvert NSString:options[@"message"]];
+
         NSLog(@"Try open view");
 
         NSString *subject = @"";
         NSString *message = @"";
-        NSString *email = @"";
-
-        if ([options objectForKey:@"email"] && [options objectForKey:@"email"] != [NSNull null]) {
-            email = [RCTConvert NSString:options[@"email"]];
-        }
-
         if ([options objectForKey:@"subject"] && [options objectForKey:@"subject"] != [NSNull null]) {
             subject = [RCTConvert NSString:options[@"subject"]];
         }
@@ -34,10 +30,11 @@
         message = [RCTConvert NSString:options[@"message"]];
 
         if ([options objectForKey:@"url"] && [options objectForKey:@"url"] != [NSNull null]) {
-            message = [message stringByAppendingString: [@" " stringByAppendingString: [RCTConvert NSString:options[@"url"]]] ];
+            NSString *url = [RCTConvert NSString:options[@"url"]];
+            message = [message stringByAppendingString: [@" " stringByAppendingString: options[@"url"]] ];
         }
 
-        NSString * urlWhats = [NSString stringWithFormat:@"mailto:%@?subject=%@&body=%@", email, subject, message ];
+        NSString * urlWhats = [NSString stringWithFormat:@"mailto:?subject=%@&body=%@", subject, message ];
         NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 
         if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
