@@ -13,6 +13,7 @@ import {
   BackHandler,
   NativeModules,
   Platform,
+  ActionSheetIOS,
   PermissionsAndroid,
 } from 'react-native';
 import type { ViewStyleProp } from 'react-native/Libraries/StyleSheet/StyleSheet';
@@ -173,34 +174,49 @@ class RNShare {
     return new Promise((resolve, reject) => {
       requireAndAskPermissions(options)
         .then(() => {
-          if (options.url && !options.urls) {
-            // Backward compatibility with { Share } from react-native
-            const url = options.url;
-            delete options.url;
-
-            options.urls = [url];
+          if (Platform.OS === 'ios' && !options.urls) {
+            // Handle for single file share
+            ActionSheetIOS.showShareActionSheetWithOptions(
+              options,
+              error => {
+                return reject({ error: error });
+              },
+              (success, activityType) => {
+                if (success) {
+                  return resolve({
+                    app: activityType,
+                  });
+                } else if (options.failOnCancel === false) {
+                  return resolve({
+                    dismissedAction: true,
+                  });
+                } else {
+                  reject(new Error('User did not share'));
+                }
+              },
+            );
+          } else {
+            NativeModules.RNShare.open(
+              options,
+              e => {
+                return reject({ error: e });
+              },
+              (success, activityType) => {
+                if (success) {
+                  return resolve({
+                    app: activityType,
+                    message: activityType,
+                  });
+                } else if (options.failOnCancel === false) {
+                  return resolve({
+                    dismissedAction: true,
+                  });
+                } else {
+                  reject(new Error('User did not share'));
+                }
+              },
+            );
           }
-
-          NativeModules.RNShare.open(
-            options,
-            e => {
-              return reject({ error: e });
-            },
-            (success, activityType) => {
-              if (success) {
-                return resolve({
-                  app: activityType,
-                  message: activityType,
-                });
-              } else if (options.failOnCancel === false) {
-                return resolve({
-                  dismissedAction: true,
-                });
-              } else {
-                reject(new Error('User did not share'));
-              }
-            },
-          );
         })
         .catch(e => reject(e));
     });
