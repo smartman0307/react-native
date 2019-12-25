@@ -59,6 +59,12 @@ We recommend using the releases from npm, however you can use the master branch 
 ``` 
 yarn add react-native-share@git+https://git@github.com/react-native-community/react-native-share.git
 ```
+---
+
+#### LSApplicationQueriesSchemes on iOS
+Remember to add `instagram`, `facebook` or watever queries schemes you need to LSApplicationQueriesSchemes
+field in your Info.plist. This is required to share content directly to other apps like Instagram, Facebook etc.  
+Values for queries schemes can be found in `Social` field of `RNShare` class.
 
 
 
@@ -254,7 +260,6 @@ Share.shareSingle(shareOptions);
 | **PAGESMANAGER** | yes   | no | no |
 | **WHATSAPP** | yes   | yes | no |
 | **INSTAGRAM** | yes   | yes | no |
-| **INSTAGRAM_STORIES** | no   | yes | no |
 | **GOOGLEPLUS** | yes   | yes | no |
 | **EMAIL** | yes   | yes | no |
 | **PINTEREST** | yes   | no | no |
@@ -334,42 +339,6 @@ static sharePDFWithAndroid(fileUrl, type) {
     });
 }
 ```
-#### Static Values for Instagram Stories
-
-These can be assessed using Share.Social property
-For eg.
-```javascript
-import Share from 'react-native-share';
-
-const shareOptions = {
-    method: Share.InstagramStories.SHARE_BACKGROUND_AND_STICKER_IMAGE,
-    backgroundImage: 'http://urlto.png',
-    stickerImage: 'data:image/png;base64,<imageInBase64>', //or you can use "data:" link
-    backgroundBottomColor: '#fefefe',
-    backgroundTopColor: '#906df4',
-    attributionURL: 'http://deep-link-to-app', //in beta
-    social: Share.Social.INSTAGRAM_STORIES
-};
-Share.shareSingle(shareOptions);
-```
-
-Supported options for INSTAGRAM_STORIES:
-
-| Name  | Type     | Description |
-| :---- | :------: | :--- |
-| backgroundImage | string   | URL you want to share |
-| stickerImage | string   | URL you want to share |
-| method | string   | [List](#instagram-stories-method-list) |
-| backgroundBottomColor | string   |  (optional) default #837DF4 |
-| backgroundTopColor | string   | (optional) default #906df4 |
-| attributionURL | string   | (optional) facebook beta-test |
-
-#### Instagram stories method list
-| Name  | Required options    |
-| :---- | :------: |
-| **SHARE_BACKGROUND_IMAGE** | backgroundImage   |
-| **SHARE_STICKER_IMAGE** | stickerImage   |
-| **SHARE_BACKGROUND_AND_STICKER_IMAGE** | backgroundImage, stickerImage   |
 
 #### Adding your implementation of FileProvider
 
