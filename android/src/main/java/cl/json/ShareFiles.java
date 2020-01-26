@@ -21,15 +21,14 @@ public class ShareFiles
 {
     private final ReactApplicationContext reactContext;
     private ArrayList<Uri> uris;
-    private ArrayList<String> filenames;
     private String intentType;
 
-    public ShareFiles(ReadableArray urls, ArrayList<String> filenames, String type, ReactApplicationContext reactContext) {
-        this(urls, filenames, reactContext);
+    public ShareFiles(ReadableArray urls, String type, ReactApplicationContext reactContext){
+        this(urls, reactContext);
         this.intentType = type;
     }
 
-    public ShareFiles(ReadableArray urls, ArrayList<String> filenames, ReactApplicationContext reactContext) {
+    public ShareFiles(ReadableArray urls, ReactApplicationContext reactContext){
         this.uris = new ArrayList<>();
         for (int i = 0; i < urls.size(); i++) {
             String url = urls.getString(i);
@@ -38,7 +37,6 @@ public class ShareFiles
                 this.uris.add(uri);
             }
         }
-        this.filenames = filenames;
         this.reactContext = reactContext;
     }
     /**
@@ -132,20 +130,17 @@ public class ShareFiles
         final MimeTypeMap mime = MimeTypeMap.getSingleton();
         ArrayList<Uri> finalUris = new ArrayList<>();
 
-        for (int uriIndex = 0; uriIndex < this.uris.size(); uriIndex++) {
-            Uri uri = this.uris.get(uriIndex);
-
+        for (Uri uri : this.uris) {
             if(this.isBase64File(uri)) {
                 String type = uri.getSchemeSpecificPart().substring(0, uri.getSchemeSpecificPart().indexOf(";"));
                 String extension = mime.getExtensionFromMimeType(type);
                 String encodedImg = uri.getSchemeSpecificPart().substring(uri.getSchemeSpecificPart().indexOf(";base64,") + 8);
-                String fileName = filenames.size() >= uriIndex + 1 ? filenames.get(uriIndex) : (System.currentTimeMillis() + "." + extension);
                 try {
                     File dir = new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DOWNLOADS );
                     if (!dir.exists() && !dir.mkdirs()) {
                         throw new IOException("mkdirs failed on " + dir.getAbsolutePath());
                     }
-                    File file = new File(dir, fileName);
+                    File file = new File(dir, System.currentTimeMillis() + "." + extension);
                     final FileOutputStream fos = new FileOutputStream(file);
                     fos.write(Base64.decode(encodedImg, Base64.DEFAULT));
                     fos.flush();
@@ -156,11 +151,7 @@ public class ShareFiles
                 }
             } else if(this.isLocalFile(uri)) {
                 if (uri.getPath() != null) {
-                    if (filenames.size() >= uriIndex + 1) {
-                        finalUris.add(RNSharePathUtil.compatUriFromFile(reactContext, new File(uri.getPath(), filenames.get(uriIndex))));
-                    } else {
-                        finalUris.add(RNSharePathUtil.compatUriFromFile(reactContext, new File(uri.getPath())));
-                    }
+                    finalUris.add(RNSharePathUtil.compatUriFromFile(reactContext, new File(uri.getPath())));
                 }
             }
         }
